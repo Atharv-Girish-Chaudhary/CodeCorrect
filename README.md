@@ -18,7 +18,7 @@ Motivated by CLRS 3rd Edition, Problem 15-5 (Edit Distance with twiddle operatio
 |--------|------|
 | Atharv Chaudhary | Bottom-up tabulation, space-optimized version, benchmarking |
 | Sandeep | Naive recursive, memoized implementations, dataset testing |
-| Scott | CLI spell checker, slides, demo, presentation |
+| Scott | CLI spell checker (integrate, scale to 50K vocab, test with real datasets), slides, demo, presentation |
 
 ## Project Structure
 
@@ -62,9 +62,116 @@ CodeCorrect/
 git clone https://github.com/YOUR_USERNAME/CodeCorrect.git
 cd CodeCorrect
 
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
 # Install dependencies
 pip install -r requirements.txt
 ```
+
+## CLI Usage
+
+The spell checker can be run from the command line:
+
+```bash
+python src/spell_checker.py --word <mistyped> --vocab <vocab_file> --method <method> --top <N>
+```
+
+**Arguments:**
+- `--word`: Mistyped word to correct (required)
+- `--vocab`: Path to vocabulary file, one word per line (required)
+- `--method`: DP method: `naive`, `memoized`, or `tabulation` (default: `tabulation`)
+- `--top`: Number of suggestions to return (default: 5)
+
+**Example:**
+```bash
+python src/spell_checker.py --word prin --vocab data/python_keywords.txt --method tabulation
+# Output: Suggestions for 'prin':
+#   print (distance: 1)
+#   in (distance: 2)
+#   True (distance: 3)
+```
+
+## Vocabulary Files & Scaling
+
+For scaling tests and real-world spell-checking, you need a large vocabulary (~50K+ words). Large vocabulary files are **not tracked in git** to keep the repository lightweight—download or generate them locally.
+
+### Option 1: Real-World English Dictionary (Recommended)
+
+Download from [dwyl/english-words](https://github.com/dwyl/english-words) (~370K actual English words):
+
+```bash
+cd data/
+curl -O https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt
+cd ..
+```
+
+**Benefits:**
+- ~370,000 real English words
+- Clean (alphabetic only, no symbols/numbers)
+- Perfect for testing spell-checker accuracy
+- Public domain / Unlicense
+
+### Option 2: Generate Synthetic Vocabulary
+
+For quick testing without download:
+
+```bash
+python3 -c "with open('data/large_vocab.txt', 'w') as f: [f.write(f'word{i}\n') for i in range(50000)]"
+```
+
+Creates 50K synthetic words instantly (~400 KB file).
+
+### Using with CLI & Notebook
+
+**CLI:**
+```bash
+# Real dictionary
+python src/spell_checker.py --word prin --vocab data/words_alpha.txt --method tabulation
+
+# Synthetic
+python src/spell_checker.py --word word12345 --vocab data/large_vocab.txt --method tabulation
+```
+
+**Notebook:**
+The notebook (`notebooks/scott_dev.ipynb`) automatically downloads `words_alpha.txt` if missing, then runs scaling and accuracy tests.
+
+### File Reference
+
+| File | Size | Tracked? | Purpose |
+|------|------|----------|---------|
+| `python_keywords.txt` | ~1 KB | ✅ Yes | Python keywords reference |
+| `typo_dataset.csv` | ~1 KB | ✅ Yes | Test dataset (expandable by team) |
+| `words_alpha.txt` | ~5.8 MB | ❌ No | Real dictionary (download on-demand) |
+| `large_vocab.txt` | ~400 KB | ❌ No | Synthetic 50K words (generated for testing) |
+
+## Implementation: CLI Tool & Scaling (Scott's Tasks)
+
+This branch (`scott/cli-scaling-integration`) completes three key objectives:
+
+### 1. CLI Tool Integration
+- **`src/spell_checker.py`**: Main CLI tool
+- **`src/vocab_loader.py`**: Vocabulary loading utility
+- **`src/naive.py`, `src/memoized.py`**: DP implementations (complement to `tabulation.py`)
+- **Features**: Accepts any vocabulary file, supports 3 DP methods, ranks suggestions by edit distance
+
+### 2. Scaling to 50K+ Vocabulary
+- Tested with 50K synthetic and 370K real-world word dictionaries
+- Tabulation method handles large vocabularies efficiently (milliseconds per word)
+- Auto-download real vocabulary in notebook if missing
+
+### 3. Real-World Testing
+- **`data/typo_dataset.csv`**: Expandable test dataset of common code typos
+- **Accuracy metrics**: Notebook calculates success rate on typo dataset
+- **Performance measurement**: Load time, computation time, suggestion quality
+
+### Development Notebook
+**`notebooks/scott_dev.ipynb`** provides an interactive demo with:
+- Vocabulary setup (auto-downloads real dictionary)
+- CLI integration examples
+- Scaling performance tests
+- Accuracy validation on typo dataset
 
 ## Branch Strategy
 
@@ -74,7 +181,7 @@ Each team member works on their own branch and merges into `main` via pull reque
 |--------|-------|-------|
 | `atharv/tabulation-benchmarking` | Atharv | `src/tabulation.py`, `benchmarks/`, `notebooks/atharv_dev.ipynb` |
 | `sandeep/naive-memoized` | Sandeep | `src/naive.py`, `src/memoized.py`, `data/`, `notebooks/sandeep_dev.ipynb` |
-| `scott/cli-presentation` | Scott | `src/spell_checker.py`, `docs/`, `notebooks/scott_dev.ipynb` |
+| `scott/cli-scaling-integration` | Scott | `src/spell_checker.py`, `docs/`, `notebooks/scott_dev.ipynb` |
 
 Shared files (`src/utils.py`, `src/vocab_loader.py`, `tests/`, `README.md`) are edited on `main` or coordinated to avoid conflicts.
 
