@@ -2,10 +2,6 @@
 
 CS 5800 Final Project — Spell checker for code typos using edit distance (Dynamic Programming)
 
-# CodeCorrect
-
-CS 5800 Final Project — Spell checker for code typos using edit distance (Dynamic Programming)
-
 ## Overview
 
 CodeCorrect is a Python-based tool that takes a mistyped programming token (keyword, function name, or variable) and returns ranked suggestions using edit distance. The project implements three DP strategies — naive recursion, memoization, and bottom-up tabulation — and benchmarks their performance on vocabularies of increasing size.
