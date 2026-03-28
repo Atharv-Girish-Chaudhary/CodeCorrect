@@ -125,7 +125,7 @@ Iteratively fills an `(m+1) × (n+1)` DP table. No recursion overhead. Includes 
 git clone https://github.com/Atharv-Girish-Chaudhary/CodeCorrect.git
 cd CodeCorrect
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate      # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -134,6 +134,19 @@ pip install -r requirements.txt
 ## Usage
 
 ### CLI spell-checker
+
+```bash
+python src/spell_checker.py --word <mistyped> --vocab <vocab_file> --method <method> --top <N>
+```
+
+**Arguments:**
+
+- `--word`: Mistyped word to correct (required)
+- `--vocab`: Path to vocabulary file, one word per line (required)
+- `--method`: DP method: `naive`, `memoized`, or `tabulation` (default: `tabulation`)
+- `--top`: Number of suggestions to return (default: 5)
+
+**Example:**
 
 ```bash
 python src/spell_checker.py --word pritn --vocab data/python_keywords.txt --method tabulation --top 3
@@ -155,6 +168,37 @@ python src/naive.py
 python src/memoized.py
 python src/tabulation.py
 ```
+
+---
+
+## Vocabulary Files & Scaling
+
+Small vocab files are tracked in git. Large vocabularies (50K+) are **not tracked** to keep the repo lightweight — download or generate them locally.
+
+### Option 1: Real-World English Dictionary (Recommended)
+
+```bash
+cd data/
+curl -O https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt
+cd ..
+```
+
+~370K real English words, public domain.
+
+### Option 2: Generate Synthetic Vocabulary
+
+```bash
+python3 -c "with open('data/large_vocab.txt', 'w') as f: [f.write(f'word{i}\n') for i in range(50000)]"
+```
+
+### File Reference
+
+| File | Tracked? | Purpose |
+|---|---|---|
+| `python_keywords.txt` | ✅ Yes | Python keywords reference |
+| `typo_dataset.csv` | ✅ Yes | Test dataset |
+| `words_alpha.txt` | ❌ No | Real dictionary (download on-demand) |
+| `large_vocab.txt` | ❌ No | Synthetic 50K words (generated locally) |
 
 ---
 
@@ -201,7 +245,7 @@ Benchmarks all three strategies across vocabularies of increasing size (100 → 
 |---|---|---|
 | `atharv/tabulation-benchmarking` | Atharv | `src/tabulation.py`, `benchmarks/`, `notebooks/atharv_dev.ipynb` |
 | `sandeep/naive-memoized` | Sandeep | `src/naive.py`, `src/memoized.py`, `data/`, `notebooks/sandeep_dev.ipynb` |
-| `scott/cli-presentation` | Scott | `src/spell_checker.py`, `docs/`, `notebooks/scott_dev.ipynb` |
+| `scott/cli-scaling-integration` | Scott | `src/spell_checker.py`, `docs/`, `notebooks/scott_dev.ipynb` |
 
 ---
 
