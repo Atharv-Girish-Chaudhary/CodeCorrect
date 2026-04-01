@@ -8,6 +8,8 @@ A Python-based spell-checker for programmer typos — built on edit distance (Le
 **→ [Setup & Usage Guide](SETUP.md)** — installation, CLI usage, Streamlit demo, testing, repo structure
 
 ---
+![CodeCorrect Demo](assets/streamlit_demo.png)
+---
 
 ## The Problem
 
