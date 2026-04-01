@@ -34,29 +34,26 @@ Report writing, presentation prep, and Q&A rehearsal are shared across all three
 ```
 CodeCorrect/
 ├── src/
+│   ├── __init__.py
 │   ├── naive.py               # Naive recursive edit distance (Sandeep)
 │   ├── memoized.py            # Top-down memoized edit distance (Sandeep)
-│   ├── tabulation.py          # Bottom-up tabulated edit distance (Atharv)
+│   ├── tabulation.py          # Bottom-up + space-optimized edit distance (Atharv)
 │   ├── spell_checker.py       # CodeCorrect CLI tool (Scott)
-│   ├── vocab_loader.py        # Vocabulary file loader (Scott)
-│   └── __init__.py
+│   └── vocab_loader.py        # Vocabulary file loader (Scott)
 ├── tests/
-│   ├── test_naive_memoized.py # 63 tests — naive + memoized (Sandeep)
-│   └── test_tabulation.py     # 27 tests — tabulation (Atharv)
+│   ├── test_tabulation.py     # 28 tests — tabulation + space-optimized (Atharv)
+│   └── test_naive_memoized.py # 63 tests — naive + memoized (Sandeep)
 ├── data/
-│   ├── python_keywords.txt    # ~100 Python keywords + stdlib functions
+│   ├── python_keywords.txt    # 109 Python keywords + stdlib functions
 │   └── typo_dataset.csv       # 50 real-world code typos for accuracy testing
 ├── benchmarks/
-│   ├── benchmark.py           # Timing script across all three approaches
-│   ├── results/               # Raw timing data (CSVs)
-│   └── plots/                 # Generated performance charts
+│   └── benchmark_results.png  # Performance comparison plots
 ├── notebooks/
-│   ├── atharv_dev.ipynb       # Tabulation experiments + DP table visualization
-│   ├── sandeep_dev.ipynb      # Naive/memoized experiments
-│   └── scott_dev.ipynb        # CLI development + demo
-├── docs/
-│   ├── progress_report_1.docx
-│   └── final_report.docx
+│   ├── atharv_benchmarking.ipynb         # Benchmarking script + plot generation
+│   ├── edit_distance_tabulation.ipynb    # Tabulation development + DP table visualization
+│   ├── edit_distance_optimized.ipynb     # Space-optimized variant experiments
+│   └── scott_dev.ipynb                   # CLI development + demo
+├── LICENSE
 ├── README.md
 └── requirements.txt
 ```
@@ -108,6 +105,30 @@ Iteratively fills an `(m+1) × (n+1)` DP table. No recursion overhead. Includes 
 
 ---
 
+## Benchmark Results
+
+We benchmarked all four approaches (naive, memoized, tabulation, space-optimized) on randomly generated string pairs with controlled mutations. Naive was capped at length 12 due to exponential blowup.
+
+| String Length | Naive (s) | Memoized (s) | Tabulation (s) | Optimized (s) |
+|---|---|---|---|---|
+| 5 | 0.000161 | 0.000015 | 0.000013 | 0.000003 |
+| 10 | 0.000618 | 0.000019 | 0.000013 | 0.000009 |
+| 12 | 0.288630 | 0.000049 | 0.000018 | 0.000012 |
+| 15 | SKIPPED | 0.000187 | 0.000024 | 0.000017 |
+| 100 | SKIPPED | 0.004097 | 0.000939 | 0.000603 |
+| 500 | SKIPPED | 0.022329 | 0.022629 | 0.016394 |
+| 1000 | SKIPPED | 0.397506 | 0.101660 | 0.080865 |
+
+**Key findings:**
+
+- Naive recursion hits 0.29s at length 12 — unusable beyond trivial inputs
+- Memoized is ~4× slower than tabulation at length 1000 due to Python dict overhead
+- Space-optimized rolling-row variant is consistently ~20% faster than full-table tabulation
+
+![Benchmark Results](benchmarks/benchmark_results.png)
+
+---
+
 ## CLRS Connections
 
 | Topic | Connection |
@@ -155,10 +176,10 @@ python src/spell_checker.py --word pritn --vocab data/python_keywords.txt --meth
 **Output:**
 
 ```
-Top 3 suggestions for 'pritn':
-  1. print    (distance: 2)
-  2. int      (distance: 3)
-  3. in       (distance: 4)
+Suggestions for 'pritn':
+  print (distance: 2)
+  write (distance: 2)
+  in (distance: 3)
 ```
 
 ### Run implementations directly
@@ -215,37 +236,8 @@ pytest tests/test_naive_memoized.py -v
 
 **Current results:**
 
-- `test_tabulation.py` — 27 passed
+- `test_tabulation.py` — 28 passed
 - `test_naive_memoized.py` — 63 passed
-
----
-
-## Benchmarking
-
-```bash
-python benchmarks/benchmark.py
-```
-
-Benchmarks all three strategies across vocabularies of increasing size (100 → 50K words):
-
-| Vocab Size | Naive | Memoized | Tabulated |
-|---|---|---|---|
-| 100 | — | — | — |
-| 1,000 | — | — | — |
-| 10,000 | — | — | — |
-| 50,000 | — | — | — |
-
-*(Results to be filled in — Week 4)*
-
----
-
-## Branch Strategy
-
-| Branch | Owner | Scope |
-|---|---|---|
-| `atharv/tabulation-benchmarking` | Atharv | `src/tabulation.py`, `benchmarks/`, `notebooks/atharv_dev.ipynb` |
-| `sandeep/naive-memoized` | Sandeep | `src/naive.py`, `src/memoized.py`, `data/`, `notebooks/sandeep_dev.ipynb` |
-| `scott/cli-scaling-integration` | Scott | `src/spell_checker.py`, `docs/`, `notebooks/scott_dev.ipynb` |
 
 ---
 
@@ -254,10 +246,12 @@ Benchmarks all three strategies across vocabularies of increasing size (100 → 
 | Week | Dates | Tasks | Owner | Status |
 |---|---|---|---|---|
 | 1 | 3/9–3/16 | Naive + memoized implementations; vocab loader | Sandeep | ✅ Done |
-| 2 | 3/16–3/23 | Bottom-up tabulation; benchmarking; complexity proofs | Atharv | ✅ Done |
-| 3 | 3/23–3/30 | CLI integration; scale to 50K vocab; typo testing | Scott | 🔄 In Progress |
-| 4 | 3/30–4/6 | Benchmark plots; project report; CLRS connections | All | ⏳ Upcoming |
-| 5 | 4/6–4/13 | Slides, demo, rehearsal; finalize submission | All | ⏳ Upcoming |
+| 2 | 3/16–3/23 | Bottom-up tabulation; space-optimized variant; 28 unit tests | Atharv | ✅ Done |
+| 3 | 3/23–3/30 | CLI integration; scale to 50K vocab; typo testing | Scott | ✅ Done |
+| 4 | 3/30–4/6 | Benchmark plots; Progress Report 2; branch cleanup | All | ✅ Done |
+| 5 | 4/6–4/13 | Final report, slides, demo, rehearsal; finalize submission | All | ⏳ Upcoming |
+
+All feature branches have been merged into `main` and deleted.
 
 ---
 
@@ -265,9 +259,9 @@ Benchmarks all three strategies across vocabularies of increasing size (100 → 
 
 **In scope:**
 
-- Edit distance implemented three ways (naive, memoized, tabulated)
+- Edit distance implemented three ways (naive, memoized, tabulated) + space-optimized variant
 - Working CLI autocorrect tool with top-k ranking
-- Benchmarks and performance plots across vocabulary sizes
+- Benchmarks and performance plots across string lengths
 - Formal time/space complexity proofs for each approach
 - CLRS Problem 15-5 twiddle operation discussion
 
