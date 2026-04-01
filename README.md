@@ -5,6 +5,8 @@
 
 A Python-based spell-checker for programmer typos — built on edit distance (Levenshtein distance) and dynamic programming.
 
+**→ [Setup & Usage Guide](SETUP.md)** — installation, CLI usage, Streamlit demo, testing, repo structure
+
 ---
 
 ## The Problem
@@ -26,37 +28,6 @@ Motivated by **CLRS 3rd Edition, Chapter 15 (Dynamic Programming)** and **Proble
 | **Scott Biggs** | CodeCorrect CLI integration (vocab loading, ranking, output formatting), presentation slides, live demo |
 
 Report writing, presentation prep, and Q&A rehearsal are shared across all three members.
-
----
-
-## Repository Structure
-
-```
-CodeCorrect/
-├── src/
-│   ├── __init__.py
-│   ├── naive.py               # Naive recursive edit distance (Sandeep)
-│   ├── memoized.py            # Top-down memoized edit distance (Sandeep)
-│   ├── tabulation.py          # Bottom-up + space-optimized edit distance (Atharv)
-│   ├── spell_checker.py       # CodeCorrect CLI tool (Scott)
-│   └── vocab_loader.py        # Vocabulary file loader (Scott)
-├── tests/
-│   ├── test_tabulation.py     # 28 tests — tabulation + space-optimized (Atharv)
-│   └── test_naive_memoized.py # 63 tests — naive + memoized (Sandeep)
-├── data/
-│   ├── python_keywords.txt    # 109 Python keywords + stdlib functions
-│   └── typo_dataset.csv       # 59 real-world code typos for accuracy testing
-├── benchmarks/
-│   └── benchmark_results.png  # Performance comparison plots
-├── notebooks/
-│   ├── atharv_benchmarking.ipynb         # Benchmarking script + plot generation
-│   ├── edit_distance_tabulation.ipynb    # Tabulation development + DP table visualization
-│   ├── edit_distance_optimized.ipynb     # Space-optimized variant experiments
-│   └── scott_dev.ipynb                   # CLI development + demo
-├── LICENSE
-├── README.md
-└── requirements.txt
-```
 
 ---
 
@@ -134,110 +105,9 @@ We benchmarked all four approaches (naive, memoized, tabulation, space-optimized
 | Topic | Connection |
 |---|---|
 | **Dynamic Programming (Ch. 15)** | Edit distance exhibits optimal substructure and overlapping subproblems — the two hallmarks of DP |
-| **CLRS Problem 15-5** | The "twiddle" (transposition) operation models `pritn → print`, the dominant typo class in code |
+| **CLRS Problem 15-5** | The "twiddle" (transposition) operation models `pritn → print`, the dominant typo class in code (discussed, not implemented) |
 | **Growth of Functions (Ch. 3)** | We prove O(3^(m+n)) for naive vs. O(mn) for DP and validate empirically with timing benchmarks |
 | **Sorting (Ch. 2, 8)** | Candidates are sorted by edit distance to extract top-k suggestions efficiently |
-
----
-
-## Setup
-
-```bash
-git clone https://github.com/Atharv-Girish-Chaudhary/CodeCorrect.git
-cd CodeCorrect
-python3 -m venv .venv
-source .venv/bin/activate      # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
----
-
-## Usage
-
-### CLI spell-checker
-
-```bash
-python src/spell_checker.py --word <mistyped> --vocab <vocab_file> --method <method> --top <N>
-```
-
-**Arguments:**
-
-- `--word`: Mistyped word to correct (required)
-- `--vocab`: Path to vocabulary file, one word per line (required)
-- `--method`: DP method: `naive`, `memoized`, or `tabulation` (default: `tabulation`)
-- `--top`: Number of suggestions to return (default: 5)
-
-**Example:**
-
-```bash
-python src/spell_checker.py --word pritn --vocab data/python_keywords.txt --method tabulation --top 3
-```
-
-**Output:**
-
-```
-Suggestions for 'pritn':
-  print (distance: 2)
-  write (distance: 2)
-  in (distance: 3)
-```
-
-### Run implementations directly
-
-```bash
-python src/naive.py
-python src/memoized.py
-python src/tabulation.py
-```
-
----
-
-## Vocabulary Files & Scaling
-
-Small vocab files are tracked in git. Large vocabularies (50K+) are **not tracked** to keep the repo lightweight — download or generate them locally.
-
-### Option 1: Real-World English Dictionary (Recommended)
-
-```bash
-cd data/
-curl -O https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt
-cd ..
-```
-
-~370K real English words, public domain.
-
-### Option 2: Generate Synthetic Vocabulary
-
-```bash
-python3 -c "with open('data/large_vocab.txt', 'w') as f: [f.write(f'word{i}\n') for i in range(50000)]"
-```
-
-### File Reference
-
-| File | Tracked? | Purpose |
-|---|---|---|
-| `python_keywords.txt` | ✅ Yes | Python keywords reference |
-| `typo_dataset.csv` | ✅ Yes | Test dataset |
-| `words_alpha.txt` | ❌ No | Real dictionary (download on-demand) |
-| `large_vocab.txt` | ❌ No | Synthetic 50K words (generated locally) |
-
----
-
-## Testing
-
-```bash
-# All tests
-pytest tests/ -v
-
-# Individual
-pytest tests/test_tabulation.py -v
-pytest tests/test_naive_memoized.py -v
-```
-
-**Current results:**
-
-- `test_tabulation.py` — 28 passed
-- `test_naive_memoized.py` — 63 passed
 
 ---
 
@@ -261,6 +131,7 @@ All feature branches have been merged into `main` and deleted.
 
 - Edit distance implemented three ways (naive, memoized, tabulated) + space-optimized variant
 - Working CLI autocorrect tool with top-k ranking
+- Streamlit demo frontend for live presentations
 - Benchmarks and performance plots across string lengths
 - Formal time/space complexity proofs for each approach
 - CLRS Problem 15-5 twiddle operation discussion
