@@ -45,7 +45,7 @@ CodeCorrect/
 │   └── test_naive_memoized.py # 63 tests — naive + memoized (Sandeep)
 ├── data/
 │   ├── python_keywords.txt    # 109 Python keywords + stdlib functions
-│   └── typo_dataset.csv       # 50 real-world code typos for accuracy testing
+│   └── typo_dataset.csv       # 59 real-world code typos for accuracy testing
 ├── benchmarks/
 │   └── benchmark_results.png  # Performance comparison plots
 ├── notebooks/

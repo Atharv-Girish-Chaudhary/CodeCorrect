@@ -2,18 +2,17 @@
 """
 CodeCorrect CLI Spell Checker
 
-Usage: python spell_checker.py --word <mistyped> --vocab <file> --method <naive|memoized|tabulation>
+Usage: python spell_checker.py --word <mistyped> --vocab <file> --method <naive|memoized|tabulation|optimized>
 """
 
 import sys
 sys.path.insert(0, 'src')
 
 import argparse
-import sys
 from vocab_loader import load_vocabulary
 from naive import edit_distance_naive
 from memoized import edit_distance_memoized
-from tabulation import edit_distance_tabulation
+from tabulation import edit_distance_tabulation, edit_distance_optimized
 
 def get_edit_distance_func(method):
     if method == 'naive':
@@ -22,6 +21,8 @@ def get_edit_distance_func(method):
         return edit_distance_memoized
     elif method == 'tabulation':
         return edit_distance_tabulation
+    elif method == 'optimized':
+        return edit_distance_optimized
     else:
         raise ValueError(f"Unknown method: {method}")
 
@@ -29,12 +30,17 @@ def main():
     parser = argparse.ArgumentParser(description="CodeCorrect Spell Checker")
     parser.add_argument('--word', required=True, help='Mistyped word')
     parser.add_argument('--vocab', required=True, help='Path to vocabulary file')
-    parser.add_argument('--method', choices=['naive', 'memoized', 'tabulation'], default='tabulation', help='DP method')
+    parser.add_argument('--method', choices=['naive', 'memoized', 'tabulation', 'optimized'], default='tabulation', help='DP method')
     parser.add_argument('--top', type=int, default=5, help='Number of suggestions')
     
     args = parser.parse_args()
     
-    vocab = load_vocabulary(args.vocab)
+    try:
+        vocab = load_vocabulary(args.vocab)
+    except FileNotFoundError:
+        print(f"Error: Vocabulary file not found: {args.vocab}")
+        sys.exit(1)
+    
     func = get_edit_distance_func(args.method)
     
     # Compute distances
