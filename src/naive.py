@@ -5,10 +5,7 @@ Operations: insert, delete, replace (each cost 1).
 Time:  O(3^(m+n))  — exponential, recomputes subproblems
 Space: O(m+n)      — recursion stack depth
 
-Per CLRS Ch. 15 / Problem 15-5:
-  'twiddle' (transposition) is NOT included here; this is the classic
-  3-operation Levenshtein model.  See memoized.py for the same model
-  with caching, and tabulation.py for the bottom-up version.
+
 """
 
 
@@ -73,9 +70,7 @@ def edit_distance_naive_with_ops(s1: str, s2: str) -> tuple[int, list[str]]:
     return _recurse(len(s1), len(s2))
 
 
-# ---------------------------------------------------------------------------
-# Quick smoke-test
-# ---------------------------------------------------------------------------
+
 if __name__ == "__main__":
     examples = [
         ("pritn", "print"),

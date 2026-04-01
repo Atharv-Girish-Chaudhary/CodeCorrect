@@ -7,11 +7,6 @@ Space: O(m * n)  — memo table + O(m+n) recursion stack
 
 This is the 'top-down DP' counterpart to naive.py (same recurrence,
 adds a memo dict) and tabulation.py (same complexity, different traversal).
-
-Per CLRS Ch. 15 / Problem 15-5 connection:
-  The three operations map to: copy (cost 0), replace (cost 1),
-  insert (cost 1), delete (cost 1).  The twiddle operation for
-  transpositions (pritn -> print) is discussed in the project report.
 """
 
 
@@ -141,9 +136,7 @@ def accuracy_on_dataset(dataset: list[tuple[str, str]], vocabulary: list[str]) -
     }
 
 
-# ---------------------------------------------------------------------------
-# Quick smoke-test
-# ---------------------------------------------------------------------------
+
 if __name__ == "__main__":
     examples = [
         ("pritn", "print"),
