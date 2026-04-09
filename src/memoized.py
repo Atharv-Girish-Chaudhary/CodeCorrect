@@ -7,6 +7,9 @@ Space: O(m * n)  — memo table + O(m+n) recursion stack
 
 This is the 'top-down DP' counterpart to naive.py (same recurrence,
 adds a memo dict) and tabulation.py (same complexity, different traversal).
+
+Note: Python dict overhead makes this ~4x slower than tabulation at
+      large inputs (length ~1000). See benchmarks/ for timing data.
 """
 
 

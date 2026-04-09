@@ -5,7 +5,8 @@ Operations: insert, delete, replace (each cost 1).
 Time:  O(3^(m+n))  — exponential, recomputes subproblems
 Space: O(m+n)      — recursion stack depth
 
-
+WARNING: Only practical for strings of length <= ~12.
+         For longer inputs, use edit_distance_memoized from memoized.py.
 """
 
 
@@ -78,6 +79,8 @@ if __name__ == "__main__":
         ("retrun", "return"),
         ("improt", "import"),
         ("defn", "def"),
+        ("flase", "False"),
+        ("whiel", "while"),
     ]
     print(f"{'Typo':<12} {'Correct':<12} {'Distance':>8}  Operations")
     print("-" * 70)
