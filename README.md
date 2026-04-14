@@ -14,7 +14,9 @@ A walkthrough of CodeCorrect showing CLI usage with a live typo correction examp
 **→ [Setup & Usage Guide](SETUP.md)** — installation, CLI usage, Streamlit demo, testing, repo structure
 
 ---
+
 ![CodeCorrect Demo](assets/streamlit_demo.png)
+
 ---
 
 ## The Problem
@@ -30,7 +32,7 @@ Motivated by **CLRS 3rd Edition, Chapter 15 (Dynamic Programming)** and **Proble
 ## Team
 
 | Member | Primary Responsibilities |
-|---|---|
+| --- | --- |
 | **Atharv Chaudhary** | Bottom-up tabulation, space-optimized variant, benchmarking framework, performance plots, complexity proofs |
 | **Sandeep Vijayarao** | Naive recursive + memoized implementations, real-world typo dataset collection, accuracy evaluation |
 | **Scott Biggs** | CodeCorrect CLI integration (vocab loading, ranking, output formatting), presentation slides, live demo |
@@ -47,7 +49,7 @@ All three implementations solve the same problem: compute the minimum number of 
 
 Pure recursive solution. Recomputes overlapping subproblems repeatedly — exponential blowup.
 
-```
+```text
 edit_distance(s1, s2):
   if s1 is empty: return len(s2)
   if s2 is empty: return len(s1)
@@ -60,7 +62,7 @@ edit_distance(s1, s2):
 ```
 
 | | Complexity |
-|---|---|
+| --- | --- |
 | Time | O(3^(m+n)) |
 | Space | O(m+n) — recursion stack |
 
@@ -69,7 +71,7 @@ edit_distance(s1, s2):
 Same recurrence as naive, but caches results in a `memo` dict so each `(i, j)` subproblem is solved exactly once.
 
 | | Complexity |
-|---|---|
+| --- | --- |
 | Time | O(m × n) |
 | Space | O(m × n) memo table + O(m+n) stack |
 
@@ -78,7 +80,7 @@ Same recurrence as naive, but caches results in a `memo` dict so each `(i, j)` s
 Iteratively fills an `(m+1) × (n+1)` DP table. No recursion overhead. Includes a space-optimized rolling two-row variant.
 
 | | Complexity |
-|---|---|
+| --- | --- |
 | Time | O(m × n) |
 | Space | O(m × n) full table, O(min(m,n)) space-optimized |
 
@@ -89,7 +91,7 @@ Iteratively fills an `(m+1) × (n+1)` DP table. No recursion overhead. Includes 
 We benchmarked all four approaches (naive, memoized, tabulation, space-optimized) on randomly generated string pairs with controlled mutations. Naive was capped at length 12 due to exponential blowup.
 
 | String Length | Naive (s) | Memoized (s) | Tabulation (s) | Optimized (s) |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 5 | 0.000161 | 0.000015 | 0.000013 | 0.000003 |
 | 10 | 0.000618 | 0.000019 | 0.000013 | 0.000009 |
 | 12 | 0.288630 | 0.000049 | 0.000018 | 0.000012 |
@@ -133,7 +135,7 @@ pytest tests/ -v
 ## CLRS Connections
 
 | Topic | Connection |
-|---|---|
+| --- | --- |
 | **Dynamic Programming (Ch. 15)** | Edit distance exhibits optimal substructure and overlapping subproblems — the two hallmarks of DP |
 | **CLRS Problem 15-5** | The "twiddle" (transposition) operation models `pritn → print`, the dominant typo class in code (discussed, not implemented) |
 | **Growth of Functions (Ch. 3)** | We prove O(3^(m+n)) for naive vs. O(mn) for DP and validate empirically with timing benchmarks |
@@ -144,7 +146,7 @@ pytest tests/ -v
 ## Project Timeline
 
 | Week | Dates | Tasks | Owner | Status |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | 3/9–3/16 | Naive + memoized implementations; vocab loader | Sandeep | ✅ Done |
 | 2 | 3/16–3/23 | Bottom-up tabulation; space-optimized variant; 28 unit tests | Atharv | ✅ Done |
 | 3 | 3/23–3/30 | CLI integration; scale to 50K vocab; typo testing | Scott | ✅ Done |
