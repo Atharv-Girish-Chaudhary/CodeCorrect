@@ -5,6 +5,12 @@
 
 A Python-based spell-checker for programmer typos — built on edit distance (Levenshtein distance) and dynamic programming.
 
+## Demo
+
+[![CodeCorrect Demo](https://img.youtube.com/vi/fuGO9O2CPAc/0.jpg)](https://youtu.be/fuGO9O2CPAc)
+
+A walkthrough of CodeCorrect showing CLI usage with a live typo correction example, the Streamlit web app comparing all four DP implementations simultaneously, and benchmark results visualizing the performance gap between naive recursion and tabulation-based approaches.
+
 **→ [Setup & Usage Guide](SETUP.md)** — installation, CLI usage, Streamlit demo, testing, repo structure
 
 ---
@@ -99,6 +105,28 @@ We benchmarked all four approaches (naive, memoized, tabulation, space-optimized
 - Space-optimized rolling-row variant is consistently ~20% faster than full-table tabulation
 
 ![Benchmark Results](benchmarks/benchmark_results.png)
+
+---
+
+## Benchmarking Results
+
+![Benchmark Results](benchmarks/benchmark_results.png)
+
+- Naive recursion blows up exponentially and is capped at string length 12 to prevent hanging
+- Memoized and tabulation both run in O(mn) but tabulation is faster in practice due to zero recursion overhead
+- Space-optimized tabulation is ~20% faster than full tabulation while using only O(min(m,n)) space
+
+---
+
+## Testing
+
+Run the full test suite with:
+
+```bash
+pytest tests/ -v
+```
+
+175 tests pass across all four implementations. The strongest coverage is cross-implementation consistency — naive, memoized, and tabulation are verified to produce identical edit distances on the same inputs, confirming algorithmic correctness across all variants.
 
 ---
 
