@@ -33,7 +33,7 @@ Motivated by **CLRS 3rd Edition, Chapter 15 (Dynamic Programming)** and **Proble
 
 | Member | Primary Responsibilities |
 | --- | --- |
-| **Atharv Chaudhary** | Bottom-up tabulation, space-optimized variant, benchmarking framework, performance plots, complexity proofs |
+| **Atharv Chaudhary** | Bottom-up tabulation, space-optimized variant, benchmarking framework, performance plots, complexity proofs, Streamlit demo, repository integration |
 | **Sandeep Vijayarao** | Naive recursive + memoized implementations, real-world typo dataset collection, accuracy evaluation |
 | **Scott Biggs** | CodeCorrect CLI integration (vocab loading, ranking, output formatting), presentation slides, live demo |
 
@@ -105,20 +105,11 @@ We benchmarked all four approaches (naive, memoized, tabulation, space-optimized
 - Naive recursion hits 0.29s at length 12 — unusable beyond trivial inputs
 - Memoized is ~4× slower than tabulation at length 1000 due to Python dict overhead
 - Space-optimized rolling-row variant is consistently ~20% faster than full-table tabulation
+- At length 500, memoized (0.022 s) and tabulation (0.023 s) are approximately equal — the performance gap only becomes clear at length 1,000, confirming that constant-factor effects require large inputs to become visible
 
 ![Benchmark Results](benchmarks/benchmark_results.png)
 
----
 
-## Benchmarking Results
-
-![Benchmark Results](benchmarks/benchmark_results.png)
-
-- Naive recursion blows up exponentially and is capped at string length 12 to prevent hanging
-- Memoized and tabulation both run in O(mn) but tabulation is faster in practice due to zero recursion overhead
-- Space-optimized tabulation is ~20% faster than full tabulation while using only O(min(m,n)) space
-
----
 
 ## Testing
 
@@ -151,7 +142,7 @@ pytest tests/ -v
 | 2 | 3/16–3/23 | Bottom-up tabulation; space-optimized variant; 28 unit tests | Atharv | ✅ Done |
 | 3 | 3/23–3/30 | CLI integration; scale to 50K vocab; typo testing | Scott | ✅ Done |
 | 4 | 3/30–4/6 | Benchmark plots; Progress Report 2; branch cleanup | All | ✅ Done |
-| 5 | 4/6–4/13 | Final report, slides, demo, rehearsal; finalize submission | All | ⏳ Upcoming |
+| 5 | 4/6–4/18 | Final report, slides, demo, rehearsal; finalize submission | All | ✅ Done |
 
 All feature branches have been merged into `main` and deleted.
 
