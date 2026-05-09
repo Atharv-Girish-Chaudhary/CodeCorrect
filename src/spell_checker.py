@@ -6,7 +6,8 @@ Usage: python spell_checker.py --word <mistyped> --vocab <file> --method <naive|
 """
 
 import sys
-sys.path.insert(0, 'src')
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 import argparse
 from vocab_loader import load_vocabulary

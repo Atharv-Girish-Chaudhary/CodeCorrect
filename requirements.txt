@@ -1,5 +1,4 @@
-pandas
-jupyter
-pytest
-matplotlib
-streamlit
+jupyter==1.1.1
+pytest==9.0.2
+matplotlib==3.10.8
+streamlit==1.56.0
