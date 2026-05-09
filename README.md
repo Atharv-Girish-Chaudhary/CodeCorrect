@@ -1,5 +1,7 @@
 # CodeCorrect
 
+[![tests](https://github.com/Atharv-Girish-Chaudhary/CodeCorrect/actions/workflows/tests.yml/badge.svg)](https://github.com/Atharv-Girish-Chaudhary/CodeCorrect/actions/workflows/tests.yml)
+
 > **CS 5800: Algorithms — Spring 2026 — Northeastern University**  
 > Instructor: Dr. Lama Hamandi
 
